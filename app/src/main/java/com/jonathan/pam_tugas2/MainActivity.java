@@ -8,16 +8,20 @@ import androidx.core.content.ContextCompat;
 import android.Manifest;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
+
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.ArrayList;
 
@@ -34,6 +38,26 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavBar);
+
+        bottomNavigationView.setSelectedItemId(R.id.home_menu);
+
+        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                switch (item.getItemId()){
+                    case R.id.player_menu:
+                        startActivity(new Intent(getApplicationContext()
+                        ,SongplayerActivity.class));
+                        overridePendingTransition(0,0);
+                        return false;
+                    case R.id.home_menu:
+                        return true;
+                }
+                    return false;
+            }
+        });
 
         if(ContextCompat.checkSelfPermission(MainActivity.this,
                 Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
@@ -102,6 +126,8 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
+
+
 
 
 }
