@@ -78,7 +78,7 @@
         android:layout_marginTop="199dp"
         android:layout_marginEnd="30dp"
         android:divider="@color/white"
-        android:dividerHeight="1dp"
+        android:dividerHeight="10.0dp"
         android:padding="3dp" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView

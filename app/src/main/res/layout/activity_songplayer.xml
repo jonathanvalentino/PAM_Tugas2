@@ -50,6 +50,7 @@
         >
 
         <ImageView
+            android:id="@+id/btnPrevious"
             android:layout_width="50dp"
             android:layout_height="wrap_content"
             android:src="@drawable/ic_previous"
@@ -65,13 +66,13 @@
             android:layout_weight="1"
             android:layout_marginStart="6dp">
             <View
-                android:id="@+id/btnPlayPause"
                 android:layout_width="35dp"
                 android:layout_height="35dp"
                 android:layout_gravity="center_vertical"
                 android:background="@drawable/background_icon_center" />
 
             <ImageView
+                android:id="@+id/btnPlayPause"
                 android:layout_width="35dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
@@ -83,6 +84,7 @@
 
 
         <ImageView
+            android:id="@+id/btnNext"
             android:layout_width="50dp"
             android:layout_height="wrap_content"
             android:src="@drawable/ic_next"
@@ -151,10 +153,11 @@
             android:background="@drawable/background_icon_center" />
 
         <ImageView
+            android:id="@+id/btnQueue"
             android:layout_width="25dp"
-            android:layout_height="18dp"
-            android:layout_marginEnd="6dp"
+            android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:layout_marginEnd="6dp"
             android:contentDescription="@string/app_name"
             android:src="@drawable/ic_expand"
             app:tint="@color/gray" />
@@ -173,6 +176,7 @@
         >
 
         <ImageView
+            android:id="@+id/btnLoop"
             android:layout_width="18dp"
             android:layout_height="18dp"
             android:layout_gravity="center"
@@ -182,6 +186,7 @@
             />
 
         <ImageView
+            android:id="@+id/btnShuffle"
             android:layout_marginStart="30dp"
             android:layout_width="18dp"
             android:layout_height="18dp"
@@ -198,7 +203,7 @@
     <LinearLayout
         android:id="@+id/songArtistName"
         android:layout_width="300dp"
-        android:layout_height="85dp"
+        android:layout_height="90dp"
         android:orientation="vertical"
         android:layout_marginTop="18dp"
         android:layout_marginStart="30dp"
@@ -222,7 +227,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/open_sans"
-            android:text="Harvest (Shihoru ver.)"
             android:textColor="@color/black"
             android:textSize="22sp"
             android:textStyle="bold" />
