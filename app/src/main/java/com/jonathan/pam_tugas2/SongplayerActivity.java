@@ -71,12 +71,14 @@ public class SongplayerActivity extends AppCompatActivity {
         nextposition = bundle.getInt("nextposition", 0);
         songName.setSelected(true);
         Uri uri = Uri.parse(mySongs.get(position).toString());
-        sname = mySongs.get(position).getName();
+        sname = mySongs.get(position).getName().replace(".mp3", "").replace(".wav", "");
         songName.setText(sname);
+
+
         if(nextposition == mySongs.size()){
             nextposition = position-position;
         }
-        nextsongname = mySongs.get(nextposition).getName();
+        nextsongname = mySongs.get(nextposition).getName().replace(".mp3", "").replace(".wav", "");
         nextSongName.setText(nextsongname);
 
         mediaPlayer = MediaPlayer.create(getApplicationContext(), uri);
@@ -157,17 +159,28 @@ public class SongplayerActivity extends AppCompatActivity {
                 mediaPlayer.stop();
                 mediaPlayer.release();
                 position = ((position+1)%mySongs.size());
-                if(position == mySongs.size()){
-                    position = position-position;
-                }
-                nextposition = position+1;
+                nextposition = ((position+1)%mySongs.size());
                 Uri uri = Uri.parse(mySongs.get(position).toString());
                 mediaPlayer = MediaPlayer.create(getApplicationContext(), uri);
-                sname = mySongs.get(position).getName();
-                nextsongname = mySongs.get(nextposition).getName();
+                sname = mySongs.get(position).getName().replace(".mp3", "").replace(".wav", "");
+                nextsongname = mySongs.get(nextposition).getName().replace(".mp3", "").replace(".wav", "");
                 songName.setText(sname);
                 nextSongName.setText(nextsongname);
 
+                String endtime = createTime(mediaPlayer.getDuration());
+                durationEnd.setText(endtime);
+
+                final Handler handler = new Handler();
+                final int delay = 1000;
+
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        String currentTime = createTime(mediaPlayer.getCurrentPosition());
+                        durationNow.setText(currentTime);
+                        handler.postDelayed(this, delay);
+                    }
+                }, delay);
 
                 mediaPlayer.start();
                 btnPlayPause.setImageResource(R.drawable.ic_pause);
@@ -176,25 +189,39 @@ public class SongplayerActivity extends AppCompatActivity {
 
 
         //PREVIOUS SONG
-        btnPrevious.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mediaPlayer.stop();
-                mediaPlayer.release();
-                position = ((position-1)<0)?(mySongs.size()-1):(position-1);
-                nextposition = position+1;
-                Uri uri = Uri.parse(mySongs.get(position).toString());
-                mediaPlayer = MediaPlayer.create(getApplicationContext(), uri);
-                sname = mySongs.get(position).getName();
-                nextsongname = mySongs.get(nextposition).getName();
-                songName.setText(sname);
-                nextSongName.setText(nextsongname);
+            btnPrevious.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    mediaPlayer.stop();
+                    mediaPlayer.release();
+                    position = ((position - 1) < 0) ? (mySongs.size() - 1) : (position - 1);
+                    nextposition = ((position+1)%mySongs.size());
+                    Uri uri = Uri.parse(mySongs.get(position).toString());
+                    mediaPlayer = MediaPlayer.create(getApplicationContext(), uri);
+                    sname = mySongs.get(position).getName().replace(".mp3", "").replace(".wav", "");
+                    nextsongname = mySongs.get(nextposition).getName().replace(".mp3", "").replace(".wav", "");
+                    songName.setText(sname);
+                    nextSongName.setText(nextsongname);
 
+                    String endtime = createTime(mediaPlayer.getDuration());
+                    durationEnd.setText(endtime);
 
-                mediaPlayer.start();
-                btnPlayPause.setImageResource(R.drawable.ic_pause);
-            }
-        });
+                    final Handler handler = new Handler();
+                    final int delay = 1000;
+
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            String currentTime = createTime(mediaPlayer.getCurrentPosition());
+                            durationNow.setText(currentTime);
+                            handler.postDelayed(this, delay);
+                        }
+                    }, delay);
+
+                    mediaPlayer.start();
+                    btnPlayPause.setImageResource(R.drawable.ic_pause);
+                }
+            });
 
         //Listener when song end
         mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {

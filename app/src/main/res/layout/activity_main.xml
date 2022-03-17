@@ -41,7 +41,6 @@
 
     </LinearLayout>
 
-    <!-- Playlist Button / Queue -->
 
     <FrameLayout
         android:layout_width="80dp"
