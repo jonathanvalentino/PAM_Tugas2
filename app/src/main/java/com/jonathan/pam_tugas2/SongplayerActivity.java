@@ -1,9 +1,14 @@
 package com.jonathan.pam_tugas2;
 
+import static java.security.AccessController.getContext;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
+import android.animation.ObjectAnimator;
 import android.content.Intent;
+import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
@@ -11,6 +16,8 @@ import android.os.Handler;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -20,6 +27,8 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.io.File;
 import java.util.ArrayList;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class SongplayerActivity extends AppCompatActivity {
 
@@ -36,6 +45,8 @@ public class SongplayerActivity extends AppCompatActivity {
     public static final String EXTRA_NAME = "song_name";
     ArrayList<File> mySongs;
     Thread updateseekbar;
+    Animation animation;
+    CircleImageView vinyl;
 
 
     @Override
@@ -55,6 +66,8 @@ public class SongplayerActivity extends AppCompatActivity {
         nextSongName = findViewById(R.id.nextSongName);
         durationNow = findViewById(R.id.durationNow);
         durationEnd = findViewById(R.id.durationEnd);
+        vinyl = findViewById(R.id.vinyl);
+        animation = AnimationUtils.loadAnimation(this, R.anim.rotation);
 
 
         if(mediaPlayer != null){
@@ -83,6 +96,8 @@ public class SongplayerActivity extends AppCompatActivity {
 
         mediaPlayer = MediaPlayer.create(getApplicationContext(), uri);
         mediaPlayer.start();
+
+        vinyl.startAnimation(animation);
 
         //Seekbar
         updateseekbar = new Thread(){
@@ -145,9 +160,11 @@ public class SongplayerActivity extends AppCompatActivity {
                 if(mediaPlayer.isPlaying()){
                     btnPlayPause.setImageResource(R.drawable.ic_play);
                     mediaPlayer.pause();
+                    vinyl.clearAnimation();
                 }else{
                     btnPlayPause.setImageResource(R.drawable.ic_pause);
                     mediaPlayer.start();
+                    vinyl.startAnimation(animation);
                 }
             }
         });
@@ -182,6 +199,8 @@ public class SongplayerActivity extends AppCompatActivity {
                     }
                 }, delay);
 
+                seekBar.setMax(mediaPlayer.getDuration());
+                vinyl.startAnimation(animation);
                 mediaPlayer.start();
                 btnPlayPause.setImageResource(R.drawable.ic_pause);
             }
@@ -218,16 +237,53 @@ public class SongplayerActivity extends AppCompatActivity {
                         }
                     }, delay);
 
+                    seekBar.setMax(mediaPlayer.getDuration());
+                    vinyl.startAnimation(animation);
                     mediaPlayer.start();
                     btnPlayPause.setImageResource(R.drawable.ic_pause);
                 }
             });
 
+
+        //btnLooping
+            btnLoop.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                    if(!mediaPlayer.isLooping()) {
+                        mediaPlayer.setLooping(true);
+                        btnLoop.setImageResource(R.drawable.ic_loop_activated);
+                    }
+                    else if(mediaPlayer.isLooping()) {
+                        mediaPlayer.setLooping(false);
+                        btnLoop.setImageResource(R.drawable.ic_loop);
+                    }
+                }
+            });
+
+
         //Listener when song end
         mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             @Override
             public void onCompletion(MediaPlayer mediaPlayer) {
-                btnNext.performClick();
+                if(mediaPlayer.isLooping()){
+                    String endtime = createTime(mediaPlayer.getDuration());
+                    durationEnd.setText(endtime);
+
+                    final Handler handler = new Handler();
+                    final int delay = 1000;
+
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            String currentTime = createTime(mediaPlayer.getCurrentPosition());
+                            durationNow.setText(currentTime);
+                            handler.postDelayed(this, delay);
+                        }
+                    }, delay);
+                }else {
+                    btnNext.performClick();
+                }
             }
         });
 
