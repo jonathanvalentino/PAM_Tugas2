@@ -6,35 +6,27 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import android.Manifest;
-import android.content.ContentResolver;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
-import android.net.Uri;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Environment;
-import android.provider.MediaStore;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-
 import java.io.File;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
     private static final int MY_PERMISSION_REQUEST = 1;
+    private MediaPlayer mediaPlayer;
 
     ListView listView;
     String[] items;
@@ -56,10 +48,8 @@ public class MainActivity extends AppCompatActivity {
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()){
                     case R.id.player_menu:
-                        startActivity(new Intent(getApplicationContext()
-                        ,SongplayerActivity.class));
-                        overridePendingTransition(0,0);
                         return false;
+
                     case R.id.home_menu:
                         return true;
                 }
@@ -115,6 +105,17 @@ public class MainActivity extends AppCompatActivity {
         customAdapter customAdapter = new customAdapter();
         listView.setAdapter(customAdapter);
 
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                String songName = (String) listView.getItemAtPosition(i);
+                startActivity(new Intent(getApplicationContext(), SongplayerActivity.class)
+                .putExtra("songs", mySongs)
+                .putExtra("songname", songName)
+                .putExtra("position", i));
+
+            }
+        });
     }
 
 
@@ -127,7 +128,6 @@ public class MainActivity extends AppCompatActivity {
                     if (ContextCompat.checkSelfPermission(MainActivity.this,
                             Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
                         Toast.makeText(this, "Permission Granted!", Toast.LENGTH_SHORT).show();
-
                         displaySong();
                     }
                 } else {
