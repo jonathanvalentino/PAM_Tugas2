@@ -8,6 +8,7 @@ import androidx.core.content.ContextCompat;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.media.Image;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Environment;
@@ -16,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -27,6 +29,8 @@ public class MainActivity extends AppCompatActivity {
 
     private static final int MY_PERMISSION_REQUEST = 1;
     private MediaPlayer mediaPlayer;
+    private View btnExpand;
+    private ImageView iconExpandCollapse;
 
     ListView listView;
     String[] items;
@@ -43,6 +47,23 @@ public class MainActivity extends AppCompatActivity {
 
         listView = (ListView)findViewById(R.id.listView);
 
+        btnExpand = findViewById(R.id.btnExpand);
+        iconExpandCollapse = findViewById(R.id.iconExpandCollapse);
+
+        btnExpand.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(listView.getVisibility() == View.VISIBLE){
+                    listView.setVisibility(View.GONE);
+                    iconExpandCollapse.setImageResource(R.drawable.ic_collapse);
+                }
+                else if(listView.getVisibility() == View.GONE){
+                    listView.setVisibility(View.VISIBLE);
+                    iconExpandCollapse.setImageResource(R.drawable.ic_expand);
+                }
+            }
+        });
+
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavBar);
 
         bottomNavigationView.setSelectedItemId(R.id.home_menu);
@@ -52,6 +73,7 @@ public class MainActivity extends AppCompatActivity {
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()){
                     case R.id.player_menu:
+                        Toast.makeText(getBaseContext(), "Please Select a song", Toast.LENGTH_SHORT).show();
                         return false;
 
                     case R.id.home_menu:

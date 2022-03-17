@@ -59,6 +59,7 @@
             android:background="@drawable/background_icon_center" />
 
         <ImageView
+            android:id="@+id/iconExpandCollapse"
             android:layout_width="25dp"
             android:layout_height="18dp"
             android:layout_gravity="center"
