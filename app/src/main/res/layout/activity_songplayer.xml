@@ -122,11 +122,10 @@
             android:layout_marginBottom="5dp"/>
 
         <TextView
-            android:id="@+id/playlistName"
+            android:id="@+id/nextSongName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/open_sans"
-            android:text="Hai to Gensō no Grimgar"
             android:textColor="@color/black"
             android:textSize="15sp"
             android:textStyle="bold" />
@@ -265,7 +264,6 @@
             android:id="@+id/durationNow"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="00:00"
             android:paddingStart="10dp"
             android:fontFamily="@font/open_sans"
             android:textSize="12sp"
@@ -277,7 +275,6 @@
             android:id="@+id/durationEnd"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="03:40"
             android:paddingEnd="15dp"
             android:fontFamily="@font/open_sans"
             android:textSize="12sp"

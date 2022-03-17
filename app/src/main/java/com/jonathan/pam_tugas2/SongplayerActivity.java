@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -23,15 +24,19 @@ import java.util.ArrayList;
 public class SongplayerActivity extends AppCompatActivity {
 
     private SeekBar seekBar;
-    private TextView songName;
+    private TextView songName, nextSongName, durationNow, durationEnd;
     private View outlinePlayPause;
     private ImageView btnPlayPause, btnNext, btnPrevious, btnLoop, btnShuffle, btnQueue;
     private MediaPlayer mediaPlayer;
 
     int position;
+    int nextposition;
     String sname;
+    String nextsongname;
     public static final String EXTRA_NAME = "song_name";
     ArrayList<File> mySongs;
+    Thread updateseekbar;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +52,9 @@ public class SongplayerActivity extends AppCompatActivity {
         btnShuffle = findViewById(R.id.btnShuffle);
         btnQueue = findViewById(R.id.btnQueue);
         outlinePlayPause = findViewById(R.id.outlinePlayPause);
+        nextSongName = findViewById(R.id.nextSongName);
+        durationNow = findViewById(R.id.durationNow);
+        durationEnd = findViewById(R.id.durationEnd);
 
 
         if(mediaPlayer != null){
@@ -60,14 +68,75 @@ public class SongplayerActivity extends AppCompatActivity {
         mySongs = (ArrayList) bundle.getParcelableArrayList("songs");
         String songname = intent.getStringExtra("songname");
         position = bundle.getInt("position", 0);
+        nextposition = bundle.getInt("nextposition", 0);
         songName.setSelected(true);
         Uri uri = Uri.parse(mySongs.get(position).toString());
         sname = mySongs.get(position).getName();
         songName.setText(sname);
+        if(nextposition == mySongs.size()){
+            nextposition = position-position;
+        }
+        nextsongname = mySongs.get(nextposition).getName();
+        nextSongName.setText(nextsongname);
 
         mediaPlayer = MediaPlayer.create(getApplicationContext(), uri);
         mediaPlayer.start();
 
+        //Seekbar
+        updateseekbar = new Thread(){
+            @Override
+            public void run() {
+                int totalDuration = mediaPlayer.getDuration();
+                int currentpos = 0;
+
+                while (currentpos<totalDuration){
+                    try {
+                        sleep(500);
+                        currentpos = mediaPlayer.getCurrentPosition();
+                        seekBar.setProgress(currentpos);
+                    }catch (InterruptedException | IllegalStateException e){
+                        e.printStackTrace();
+                    }
+                }
+            }
+        };
+        seekBar.setMax(mediaPlayer.getDuration());
+        updateseekbar.start();
+
+        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                mediaPlayer.seekTo(seekBar.getProgress());
+            }
+        });
+
+        String endtime = createTime(mediaPlayer.getDuration());
+        durationEnd.setText(endtime);
+
+        final Handler handler = new Handler();
+        final int delay = 1000;
+
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                String currentTime = createTime(mediaPlayer.getCurrentPosition());
+                durationNow.setText(currentTime);
+                handler.postDelayed(this, delay);
+            }
+        }, delay);
+
+
+        //BtnPlayAndPause
         outlinePlayPause.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -81,7 +150,59 @@ public class SongplayerActivity extends AppCompatActivity {
             }
         });
 
+        //NEXT SONG
+        btnNext.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mediaPlayer.stop();
+                mediaPlayer.release();
+                position = ((position+1)%mySongs.size());
+                if(position == mySongs.size()){
+                    position = position-position;
+                }
+                nextposition = position+1;
+                Uri uri = Uri.parse(mySongs.get(position).toString());
+                mediaPlayer = MediaPlayer.create(getApplicationContext(), uri);
+                sname = mySongs.get(position).getName();
+                nextsongname = mySongs.get(nextposition).getName();
+                songName.setText(sname);
+                nextSongName.setText(nextsongname);
 
+
+                mediaPlayer.start();
+                btnPlayPause.setImageResource(R.drawable.ic_pause);
+            }
+        });
+
+
+        //PREVIOUS SONG
+        btnPrevious.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mediaPlayer.stop();
+                mediaPlayer.release();
+                position = ((position-1)<0)?(mySongs.size()-1):(position-1);
+                nextposition = position+1;
+                Uri uri = Uri.parse(mySongs.get(position).toString());
+                mediaPlayer = MediaPlayer.create(getApplicationContext(), uri);
+                sname = mySongs.get(position).getName();
+                nextsongname = mySongs.get(nextposition).getName();
+                songName.setText(sname);
+                nextSongName.setText(nextsongname);
+
+
+                mediaPlayer.start();
+                btnPlayPause.setImageResource(R.drawable.ic_pause);
+            }
+        });
+
+        //Listener when song end
+        mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mediaPlayer) {
+                btnNext.performClick();
+            }
+        });
 
         //Back button
         ImageView imageBack = findViewById(R.id.btnBack);
@@ -89,7 +210,6 @@ public class SongplayerActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 mediaPlayer.stop();
-                mediaPlayer.release();
                 onBackPressed();
             }
         });
@@ -107,7 +227,6 @@ public class SongplayerActivity extends AppCompatActivity {
                         return true;
                     case R.id.home_menu:
                         mediaPlayer.stop();
-                        mediaPlayer.release();
                         onBackPressed();
                         overridePendingTransition(0, 0);
                         return false;
@@ -117,4 +236,26 @@ public class SongplayerActivity extends AppCompatActivity {
         });
 
     }
+
+    @Override
+    public void onBackPressed() {
+        mediaPlayer.stop();
+        finish();
+    }
+
+    public String createTime(int duration){
+        String time = "";
+        int min = duration/1000/60;
+        int second = duration/1000%60;
+
+        time+=min+":";
+
+        if(second<10){
+            time+="0";
+        }
+        time+=second;
+
+        return time;
+    }
+
 }

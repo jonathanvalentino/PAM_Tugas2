@@ -31,6 +31,10 @@ public class MainActivity extends AppCompatActivity {
     ListView listView;
     String[] items;
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -112,7 +116,8 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(new Intent(getApplicationContext(), SongplayerActivity.class)
                 .putExtra("songs", mySongs)
                 .putExtra("songname", songName)
-                .putExtra("position", i));
+                .putExtra("position", i)
+                .putExtra("nextposition", i+1));
 
             }
         });
