@@ -1,27 +1,21 @@
 package com.jonathan.pam_tugas2;
 
-import static java.security.AccessController.getContext;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
 
-import android.animation.ObjectAnimator;
 import android.content.Intent;
-import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -33,15 +27,18 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class SongplayerActivity extends AppCompatActivity {
 
     private SeekBar seekBar;
-    private TextView songName, nextSongName, durationNow, durationEnd;
+    private TextView songName, nextSongName, prevSongName, durationNow, durationEnd;
     private View outlinePlayPause;
-    private ImageView btnPlayPause, btnNext, btnPrevious, btnLoop, btnShuffle, btnQueue;
+    private ImageView btnPlayPause, btnNext, btnPrevious, btnLoop, icExpColl;
     private MediaPlayer mediaPlayer;
+    private LinearLayout prevSongLayout, playlistLayout;
 
     int position;
     int nextposition;
+    int prevposition;
     String sname;
     String nextsongname;
+    String prevsongname;
     public static final String EXTRA_NAME = "song_name";
     ArrayList<File> mySongs;
     Thread updateseekbar;
@@ -60,12 +57,14 @@ public class SongplayerActivity extends AppCompatActivity {
         btnNext = findViewById(R.id.btnNext);
         btnPrevious = findViewById(R.id.btnPrevious);
         btnLoop = findViewById(R.id.btnLoop);
-        btnShuffle = findViewById(R.id.btnShuffle);
-        btnQueue = findViewById(R.id.btnQueue);
+        icExpColl = findViewById(R.id.icExpColl);
         outlinePlayPause = findViewById(R.id.outlinePlayPause);
         nextSongName = findViewById(R.id.nextSongName);
+        prevSongName = findViewById(R.id.prevSongName);
         durationNow = findViewById(R.id.durationNow);
         durationEnd = findViewById(R.id.durationEnd);
+        prevSongLayout = findViewById(R.id.prevSongLayout);
+        playlistLayout = findViewById(R.id.playlistLayout);
         vinyl = findViewById(R.id.vinyl);
         animation = AnimationUtils.loadAnimation(this, R.anim.rotation);
 
@@ -82,10 +81,13 @@ public class SongplayerActivity extends AppCompatActivity {
         String songname = intent.getStringExtra("songname");
         position = bundle.getInt("position", 0);
         nextposition = bundle.getInt("nextposition", 0);
+        prevposition = ((position - 1) < 0) ? (mySongs.size() - 1) : (position - 1);
         songName.setSelected(true);
         Uri uri = Uri.parse(mySongs.get(position).toString());
         sname = mySongs.get(position).getName().replace(".mp3", "").replace(".wav", "");
+        prevsongname = mySongs.get(prevposition).getName().replace(".mp3", "").replace(".wav", "");
         songName.setText(sname);
+        prevSongName.setText(prevsongname);
 
 
         if(nextposition == mySongs.size()){
@@ -177,10 +179,13 @@ public class SongplayerActivity extends AppCompatActivity {
                 mediaPlayer.release();
                 position = ((position+1)%mySongs.size());
                 nextposition = ((position+1)%mySongs.size());
+                prevposition = ((position - 1) < 0) ? (mySongs.size() - 1) : (position - 1);
                 Uri uri = Uri.parse(mySongs.get(position).toString());
                 mediaPlayer = MediaPlayer.create(getApplicationContext(), uri);
                 sname = mySongs.get(position).getName().replace(".mp3", "").replace(".wav", "");
                 nextsongname = mySongs.get(nextposition).getName().replace(".mp3", "").replace(".wav", "");
+                prevsongname = mySongs.get(prevposition).getName().replace(".mp3", "").replace(".wav", "");
+                prevSongName.setText(prevsongname);
                 songName.setText(sname);
                 nextSongName.setText(nextsongname);
 
@@ -215,10 +220,13 @@ public class SongplayerActivity extends AppCompatActivity {
                     mediaPlayer.release();
                     position = ((position - 1) < 0) ? (mySongs.size() - 1) : (position - 1);
                     nextposition = ((position+1)%mySongs.size());
+                    prevposition = ((position - 1) < 0) ? (mySongs.size() - 1) : (position - 1);
                     Uri uri = Uri.parse(mySongs.get(position).toString());
                     mediaPlayer = MediaPlayer.create(getApplicationContext(), uri);
                     sname = mySongs.get(position).getName().replace(".mp3", "").replace(".wav", "");
                     nextsongname = mySongs.get(nextposition).getName().replace(".mp3", "").replace(".wav", "");
+                    prevsongname = mySongs.get(prevposition).getName().replace(".mp3", "").replace(".wav", "");
+                    prevSongName.setText(prevsongname);
                     songName.setText(sname);
                     nextSongName.setText(nextsongname);
 
@@ -261,6 +269,22 @@ public class SongplayerActivity extends AppCompatActivity {
                 }
             });
 
+        //icon Expand Collapse
+        icExpColl.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(prevSongLayout.getVisibility() == View.VISIBLE && playlistLayout.getVisibility() == View.VISIBLE){
+                    prevSongLayout.setVisibility(View.GONE);
+                    playlistLayout.setVisibility(View.GONE);
+                    icExpColl.setImageResource(R.drawable.ic_collapse);
+                }
+                else if(prevSongLayout.getVisibility() == View.GONE && playlistLayout.getVisibility() == View.GONE){
+                    prevSongLayout.setVisibility(View.VISIBLE);
+                    playlistLayout.setVisibility(View.VISIBLE);
+                    icExpColl.setImageResource(R.drawable.ic_expand);
+                }
+            }
+        });
 
         //Listener when song end
         mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
@@ -281,6 +305,9 @@ public class SongplayerActivity extends AppCompatActivity {
                             handler.postDelayed(this, delay);
                         }
                     }, delay);
+                    mediaPlayer.stop();
+                    mediaPlayer.release();
+                    mediaPlayer.start();
                 }else {
                     btnNext.performClick();
                 }
@@ -302,20 +329,17 @@ public class SongplayerActivity extends AppCompatActivity {
 
         bottomNavigationView.setSelectedItemId(R.id.player_menu);
 
-        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                switch (item.getItemId()){
-                    case R.id.player_menu:
-                        return true;
-                    case R.id.home_menu:
-                        mediaPlayer.stop();
-                        onBackPressed();
-                        overridePendingTransition(0, 0);
-                        return false;
-                }
-                return false;
+        bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
+            switch (item.getItemId()){
+                case R.id.player_menu:
+                    return true;
+                case R.id.home_menu:
+                    mediaPlayer.stop();
+                    onBackPressed();
+                    overridePendingTransition(0, 0);
+                    return false;
             }
+            return false;
         });
 
     }
@@ -340,5 +364,6 @@ public class SongplayerActivity extends AppCompatActivity {
 
         return time;
     }
+
 
 }

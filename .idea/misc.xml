@@ -4,6 +4,8 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/Users/Jonathan/AndroidStudioProjects/PAM_Tugas2/app/src/main/res/drawable-v24/ic_loop_activated.xml" value="0.1735042735042735" />
+        <entry key="..\:/Users/Jonathan/AndroidStudioProjects/PAM_Tugas2/app/src/main/res/drawable-v24/ic_shuffle_activated.xml" value="0.1735042735042735" />
+        <entry key="..\:/Users/Jonathan/AndroidStudioProjects/PAM_Tugas2/app/src/main/res/drawable/background_dialog.xml" value="0.3067510548523207" />
         <entry key="..\:/Users/Jonathan/AndroidStudioProjects/PAM_Tugas2/app/src/main/res/drawable/background_icon_center.xml" value="0.37864583333333335" />
         <entry key="..\:/Users/Jonathan/AndroidStudioProjects/PAM_Tugas2/app/src/main/res/drawable/background_music_control.xml" value="0.37864583333333335" />
         <entry key="..\:/Users/Jonathan/AndroidStudioProjects/PAM_Tugas2/app/src/main/res/drawable/bottom_nav_icon_color_selector.xml" value="0.21875" />
@@ -14,6 +16,7 @@
         <entry key="..\:/Users/Jonathan/AndroidStudioProjects/PAM_Tugas2/app/src/main/res/font/open_sans_bold.xml" value="0.2328125" />
         <entry key="..\:/Users/Jonathan/AndroidStudioProjects/PAM_Tugas2/app/src/main/res/layout/activity_main.xml" value="0.33" />
         <entry key="..\:/Users/Jonathan/AndroidStudioProjects/PAM_Tugas2/app/src/main/res/layout/activity_songplayer.xml" value="0.33" />
+        <entry key="..\:/Users/Jonathan/AndroidStudioProjects/PAM_Tugas2/app/src/main/res/layout/dialog_queue.xml" value="0.33" />
         <entry key="..\:/Users/Jonathan/AndroidStudioProjects/PAM_Tugas2/app/src/main/res/layout/list_item.xml" value="0.33" />
         <entry key="..\:/Users/Jonathan/AndroidStudioProjects/PAM_Tugas2/app/src/main/res/menu/menu.xml" value="0.1" />
       </map>

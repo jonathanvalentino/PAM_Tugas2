@@ -132,10 +132,9 @@
 
     </LinearLayout>
 
-    <!-- Playlist Name -->
 
     <LinearLayout
-        android:id="@+id/playlistLayout"
+        android:id="@+id/prevSongLayout"
         android:layout_width="300dp"
         android:layout_height="80dp"
         android:layout_marginTop="18dp"
@@ -144,6 +143,41 @@
         android:orientation="vertical"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/layoutMusicControl"
+        >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/open_sans"
+            android:text="@string/prev_song"
+            android:textColor="@color/light_gray"
+            android:letterSpacing="0.2"
+            android:textSize="11sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="5dp"/>
+
+        <TextView
+            android:id="@+id/prevSongName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/open_sans"
+            android:textColor="@color/black"
+            android:textSize="15sp"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
+    <!-- Next Song Name -->
+
+    <LinearLayout
+        android:id="@+id/playlistLayout"
+        android:layout_width="300dp"
+        android:layout_height="80dp"
+        android:layout_marginStart="30dp"
+        android:padding="18dp"
+        android:orientation="vertical"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/prevSongLayout"
         >
 
         <TextView
@@ -168,83 +202,29 @@
 
     </LinearLayout>
 
-    <!-- Playlist Button / Queue -->
-
-    <FrameLayout
-        android:id="@+id/layoutExpandPlaylist"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
-        android:layout_marginTop="18dp"
-        android:layout_weight="1"
+    <ImageView
+        android:id="@+id/icExpColl"
+        android:layout_width="35dp"
+        android:layout_height="30dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="40dp"
+        android:contentDescription="@string/app_name"
+        android:src="@drawable/ic_expand"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/playlistLayout"
-        app:layout_constraintTop_toBottomOf="@id/layoutMusicControl">
-
-        <View
-            android:id="@+id/btnExpand"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
-            android:layout_marginEnd="6dp"
-            android:layout_gravity="center"
-            android:background="@drawable/background_icon_center" />
-
-        <ImageView
-            android:id="@+id/btnQueue"
-            android:layout_width="25dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginEnd="6dp"
-            android:contentDescription="@string/app_name"
-            android:src="@drawable/ic_expand"
-            app:tint="@color/gray" />
-    </FrameLayout>
-
-    <!-- Loop Shuffle Icon -->
-    <LinearLayout
-        android:id="@+id/layoutFunction"
-        android:layout_width="100dp"
-        android:layout_height="20dp"
-        android:layout_marginStart="30dp"
-        android:paddingStart="18dp"
-        android:orientation="horizontal"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/playlistLayout"
-        >
-
-        <ImageView
-            android:id="@+id/btnLoop"
-            android:layout_width="18dp"
-            android:layout_height="18dp"
-            android:layout_gravity="center"
-            android:src="@drawable/ic_loop"
-            android:contentDescription="@string/app_name"
-            />
-
-        <ImageView
-            android:id="@+id/btnShuffle"
-            android:layout_marginStart="30dp"
-            android:layout_width="18dp"
-            android:layout_height="18dp"
-            android:layout_gravity="center"
-            android:src="@drawable/ic_shuffle"
-            app:tint="@color/light_gray"
-            android:contentDescription="@string/app_name"
-            />
-
-    </LinearLayout>
-
-    <!-- Song name, artist -->
+        app:layout_constraintTop_toBottomOf="@+id/imgCover"
+        app:tint="@color/light_gray" />
 
     <LinearLayout
         android:id="@+id/songArtistName"
         android:layout_width="300dp"
         android:layout_height="90dp"
-        android:orientation="vertical"
-        android:layout_marginTop="18dp"
         android:layout_marginStart="30dp"
+        android:layout_marginTop="18dp"
+        android:orientation="vertical"
         android:padding="18dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/layoutFunction">
+        app:layout_constraintTop_toBottomOf="@+id/playlistLayout">
 
         <TextView
             android:id="@+id/nowPlaying"
@@ -252,10 +232,10 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="5dp"
             android:fontFamily="@font/open_sans_bold"
-            android:text="@string/now_playing"
             android:letterSpacing="0.2"
+            android:text="@string/now_playing"
             android:textColor="@color/light_gray"
-            android:textSize="13sp"/>
+            android:textSize="13sp" />
 
         <TextView
             android:id="@+id/songName"
@@ -268,20 +248,19 @@
 
     </LinearLayout>
 
-    <!-- Icon More (Song) -->
+    <!-- Loop -->
     <ImageView
-        android:id="@+id/btnMore"
+        android:id="@+id/btnLoop"
         android:layout_width="25dp"
         android:layout_height="25dp"
-        android:layout_marginTop="70dp"
         android:layout_marginEnd="15dp"
-        android:src="@drawable/ic_more"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/songArtistName"
-        app:layout_constraintTop_toBottomOf="@id/layoutExpandPlaylist"
-        app:tint="@color/light_gray"
         android:contentDescription="@string/app_name"
-        />
+        android:src="@drawable/ic_loop"
+        app:layout_constraintBottom_toTopOf="@+id/layoutDuration"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/songArtistName"
+        app:layout_constraintTop_toBottomOf="@+id/playlistLayout" />
+
 
     <!-- Start & End Time -->
     <LinearLayout

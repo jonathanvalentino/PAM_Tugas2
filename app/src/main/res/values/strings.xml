@@ -4,4 +4,5 @@
     <string name="player">Player</string>
     <string name="now_playing">NOW PLAYING</string>
     <string name="next_song">NEXT SONG</string>
+    <string name="prev_song">PREV SONG</string>
 </resources>
